@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="./zepto-1.1.4-wechat.min.js"></script>
+    <style>
+    html,
+    body {
+      /*overflow: hidden;*/
+      min-height: 100%;
+    }
+
+    /* Font Face */
+    @font-face {
+      font-family: 'FontAwesome';
+      src: url(./fontawesome-webfont.eot);
+      font-weight: normal;
+      font-style: normal;
+    }
+    [class^="icon-"],
+    [class*=" icon-"] {
+      font-family: FontAwesome;
+      font-weight: normal;
+      font-style: normal;
+      text-decoration: inherit;
+      -webkit-font-smoothing: antialiased;
+      *margin-right: .3em;
+    }
+    [class^="icon-"]:before,
+    [class*=" icon-"]:before {
+      text-decoration: inherit;
+      display: inline-block;
+      speak: none;
+    }
+    .icon-bold:before {
+      content: "\f032";
+    }
+    .icon-italic:before {
+      content: "\f033";
+    }
+    .icon-strikethrough:before {
+      content: "\f0cc";
+    }
+    .icon-underline:before {
+      content: "\f0cd";
+    }
+    .icon-quote-left:before {
+      content: "\f10d";
+    }
+    .icon-list-ol:before {
+      content: "\f0cb";
+    }
+    .icon-list-ul:before {
+      content: "\f0ca";
+    }
+    .icon-link:before {
+      content: "\f0c1";
+    }
+    .icon-unlink:before {
+      content: "\f127";
+    }
+    .icon-check-minus:before {
+      content: "\f147";
+    }
+    .icon-undo:before {
+      content: "\f0e2";
+    }
+    .icon-repeat:before {
+      content: "\f01e";
+    }
+    .icon-picture:before {
+      content: "\f03e";
+    }
+
+    /* Editor Style */
+    .editor {
+      font-family: Georgia, 'Times New Roman', Times, 'Songti SC', SimSun, serif;
+      font-size: 22px;
+      font-weight: normal;
+      line-height: normal;
+      outline: none;
+    }
+
+    a,
+    a:hover,
+    a:visited,
+    a:link,
+    a:active {
+      color: rgb(46, 140, 250);
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    blockquote {
+      margin: 0px;
+      margin-bottom: 20px;
+      padding: 15px;
+      word-break: break-word;
+      background-color: rgb(246, 246, 255);
+      border-left: 4px solid rgb(46, 140, 250);
+    }
+
+    .image-package {
+      display: block;
+      margin: 0px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .image-package .image-caption {
+      display: inline-block;
+      min-width: 20px;
+      line-height: 17px;
+      font-style: italic;
+      color: rgb(153, 153, 153);
+      border-bottom: 1px solid rgb(120, 120, 135);
+    }
+
+    /* Private CSS */
+    body {
+      margin: 0px;
+      padding: 5px;
+    }
+    div,
+    ul,
+    li,
+    blockquote,
+    section {
+      box-sizing: border-box;
+    }
+    .mask {
+      width: 100%;
+      -webkit-mask-image: -webkit-linear-gradient(left, rgba(0,0,0,0) 1%, rgba(0,0,0,1) 7%, rgba(0,0,0,1) 93%, rgba(0,0,0,0) 99%);
+    }
+    .NoToolbar .toolbar-area {
+      display: none;
+    }
+    .toolbar-area {
+      position: relative;
+      width: 100%;
+      height: 45px;
+      top: 0px;
+      left: 0px;
+      margin: 0px;
+      padding: 5px;
+      font-family: Georgia, "Times New Roman", Times, "Songti SC", "SimSun", serif;
+    }
+    .toolbar-area .toolbar-frame {
+      position: relative;
+      width: 100%;
+      height: 45px;
+      margin: 0px;
+      padding: 0px;
+      border-radius: 10px;
+      background: linear-gradient(rgb(44, 166, 248) 0%, rgb(43, 138, 226) 90%, rgb(34, 110, 180) 100%);
+      box-shadow: 1px 1px 4px 1px rgb(8, 22, 36);
+      transition: top 250ms ease-out;
+      overflow: hidden;
+    }
+    .toolbar-area .toolbar {
+      position: relative;
+      display: block;
+      height: 45px;
+      margin: 0px;
+      padding: 0px;
+    }
+    .toolbar-area .toolbar .item {
+      position: relative;
+      display: inline-block;
+      list-style: none;
+      width: 45px;
+      height: 45px;
+      line-height: 45px;
+      text-align: center;
+      color: white;
+      transition: background 100ms ease;
+    }
+    .toolbar-area .toolbar .item:after {
+      content: '';
+      display: inline-block;
+      position: absolute;
+      width: 1px;
+      height: 35px;
+      top: 5px;
+      right: 0px;
+      background: linear-gradient(rgba(35, 132, 198, 0) 0%, rgb(35, 132, 198) 20%, rgb(35, 132, 198) 80%, rgba(35, 132, 198, 0) 100%);
+      overflow: hidden;
+    }
+    .toolbar-area .toolbar .item.left-margin {
+      width: 10px;
+    }
+    .toolbar-area .toolbar .item.left-margin:before {
+      content: '';
+      display: inline-block;
+    }
+    .toolbar-area .toolbar .item.selected {
+      background: rgb(35, 132, 198);
+      box-shadow: inset 0px 0px 5px rgba(10, 39, 59, 1);
+    }
+    .editor-area {
+      display: block;
+      margin: 0px;
+      padding: 5px;
+      padding-top: 15px;
+    }
+    .editor-area .editor {
+      margin: 0px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid black;
+      box-shadow: inset 0px 0px 10px rgb(8, 22, 36);
+    }
+    .editor-area .editor p {
+      margin-top: 0px;
+    }
+    .NoToolbar .editor-area {
+      min-height: 100%;
+    }
+    .NoToolbar .editor-area .editor {
+      min-height: 100%;
+    }
+
+    .float {
+      position: fixed;
+      display: block;
+      padding: 10px;
+      left: 50%;
+      top: -500px;
+      z-index: 1000;
+      border-radius: 10px;
+      border: 1px solid black;
+      background: rgba(0, 0, 0, 0.8);
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8), inset 2px 2px 2px rgba(255, 255, 255, 0.5), inset -2px -2px 2px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      color: white;
+      opacity: 0;
+      transition: opacity 250ms ease-in-out, top 0ms ease-in-out 250ms;
+    }
+    .float.show {
+      opacity: 1;
+      pointer-events: auto;
+      top: 50%;
+      transition: opacity 250ms ease-in-out;
+    }
+    .float .right {
+      text-align: right;
+    }
+
+    .link_generator {
+      width: 300px;
+      height: 155px;
+      margin-top: -75px;
+      margin-left: -150px;
+      font-weight: lighter;
+    }
+    .link_generator .title {
+      font-weight: 900;
+      font-size: 24px;
+    }
+    .link_generator .line {
+      margin-top: 20px;
+      font-size: 20px;
+    }
+    .link_generator .line input {
+      position: relative;
+      top: -2px;
+      height: 24px;
+      width: 200px;
+      line-height: 24px;
+      font-size: 20px;
+      outline: none;
+    }
+    .link_generator .controller {
+      margin-top: 10px;
+    }
+    .link_generator .controller button {
+      outline: none;
+      border: none;
+      padding: 5px;
+      padding-left: 15px;
+      padding-right: 15px;
+      margin-left: 20px;
+      font-size: 16px;
+      height: 40px;
+      width: 70px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.6);
+      box-shadow: inset 0px 0px 2px 1px rgba(180, 180, 180, 0.5);
+      color: rgb(180, 180, 180);
+    }
+
+    .maskcover {
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      z-index: 900;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 0px;
+      box-shadow: none;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 250ms ease-in-out;
+    }
+    .float.maskcover.show {
+      top: 0px;
+    }
+    </style>
+  </head>
+  <body class="NoToolbar">
+    <div id="log_layer"></div>
+    <div class="float maskcover"></div>
+    <div class="float link_generator">
+      <div class="title">请输入链接地址：</div>
+      <div class="line">
+        <span>URL: </span>
+        <input class="url" type="text" placeholder="http://">
+      </div>
+      <div class="controller right">
+        <button class="submit">确定</button>
+        <button class="cancel">取消</button>
+      </div>
+    </div>
+    <section class="toolbar-area">
+      <div class="toolbar-frame">
+        <div class="mask">
+          <ul class="toolbar">
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section class="editor-area">
+      <div class="editor" contenteditable="true"></div>
+    </section>
+  </body>
+  <script>
+  var MobileWriter = (function (showToolbar) {
+    var M = {};
+    var toolframe = $('.toolbar-frame');
+    var toolbar = $('.toolbar');
+    var editor = $('.editor');
+    var body = $('body');
+    var mask = $('.maskcover');
+    var link_modal = $('.link_generator');
+    var toolbar_width = 0;
+    var toolbar_margin = 10;
+
+    var newButton;
+    if (showToolbar) {
+      newButton = function (className, title, callback) {
+        var btn = $('<li>').addClass('item')
+        if (className && className.length && className.length > 0) {
+          btn.addClass(className);
+        }
+        if (title && title.length && title.length > 0) {
+          btn.html(title);
+        }
+        if (callback) {
+          btn[0].__callback = callback;
+        }
+        toolbar.append(btn);
+        toolbar_width = (toolbar.children('li').length - 1) * 45 + toolbar_margin;
+        toolbar.css({width: toolbar_width});
+        return btn;
+      };
+    }
+    else {
+      newButton = function () {};
+    }
+
+    // Initial the position of toolbar.
+    // window.onload can't use in iOS Safari
+    if (showToolbar) {
+      setTimeout(function () {
+        toolframe.css({top: window.scrollY});
+      }, 1000);
+    }
+
+    // Invalid Links in Editor.
+    editor.on('click tap', 'a', function (e) {
+      e.preventDefault();
+    });
+
+    // Invalid Toolbar Click.
+    if (showToolbar) {
+      toolbar.on('click mousedown mouseup touchstart touchmove touchend', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+      });
+    }
+    else {
+      toolbar.remove();
+    }
+
+    // Move toolbar
+    var start_x = 0, start_y, start_left = 0, moving = false, move_left = 0, is_click = true, endMoving, movingToolbar;
+    if (showToolbar) {
+      endMoving = function (e) {
+        if (moving) {
+          start_left = move_left;
+          moving = false;
+        }
+      };
+      movingToolbar = function (x, y) {
+        var dx = x - start_x;
+        var left = start_left + dx;
+        var right = toolframe.width() - toolbar_width - toolbar_margin;
+        if (left > 0) left = 0;
+        else if (left < right) left = right;
+        move_left = left;
+        toolbar.css({left: left});
+        if (is_click) is_click = Math.abs(dx) < 20;
+        if (is_click) is_click = Math.abs(y - start_y) < 20;
+      };
+      toolbar.on('mousedown touchstart', function (e) {
+        is_click = true;
+        if (toolframe.width() < toolbar_width) {
+          if (e.touches) {
+            if (e.touches.length === 1) {
+              var touch = e.touches[0];
+              start_x = touch.clientX;
+              start_y = touch.clientY;
+              moving = true;
+            }
+            else {
+              endMoving();
+            }
+          }
+          else {
+            start_x = e.x;
+            start_y = e.y;
+            moving = true;
+          }
+        }
+      });
+      body.on('mousemove', function (e) {
+        if (e.which === 1 && moving) {
+          movingToolbar(e.x, e.y);
+        }
+        else if (e.which !== 1) {
+          endMoving();
+        }
+      });
+      toolbar.on('touchmove', function (e) {
+        if (moving) {
+          e = e.touches[0];
+          movingToolbar(e.clientX, e.clientY);
+        }
+      });
+      body.on('mouseup', endMoving);
+      toolbar.on('mouseup touchend', endMoving);
+    }
+    else {
+      endMoving = movingToolbar = newButton;
+    }
+
+    // Tap Button
+    var last_tap = 0;
+    if (showToolbar) {
+      toolbar.on('mouseup touchend', function (e) {
+        var time = new Date().getTime();
+        if (time - last_tap < 500) return;
+        last_tap = time;
+
+        if (is_click) {
+          var event = e.target.__callback;
+          if (event) {
+            event();
+          }
+        }
+        toggleLinkButton();
+        e.stopPropagation();
+        e.preventDefault();
+      });
+    }
+
+    // Select Image
+    editor.on('mouseup touchend', 'img', function (e) {
+      var time = new Date().getTime();
+      if (time - last_tap < 500) return;
+      last_tap = time;
+
+      var selection = window.getSelection();
+      var range = selection.getRangeAt(0);
+      range.selectNode(e.target);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    });
+
+    // Move Toolbar
+    var toolbar_task_pos = -100, toolbar_task, toolbar_mover = null;
+    if (showToolbar) {
+      toolbar_task = function () {
+        var pos = window.scrollY;
+        if (pos !== toolbar_task_pos) {
+          toolframe.css({top: pos});
+          toolbar_task_pos = pos;
+        }
+      }
+      toolbar_mover = setInterval(toolbar_task, 500);
+    }
+    else {
+      toolbar_task = newButton;
+    }
+
+    // Responsing Menu
+    var getNodeTagChain = function (node) {
+      console.log('Get Node Tag Chain Start');
+      var result = [], i = 0, e = editor[0];
+      while (node[0] !== e && node[0] !== document.body) {
+        result.push(node[0].nodeName.toLowerCase());
+        node = node.parent();
+      }
+      console.log('Get Node Tag Chain Finish');
+      return result;
+    };
+    var toogleLinkTask = null;
+    var toggleButtonStyle;
+    if (showToolbar) {
+      toggleButtonStyle = function (button, chain, tags, onClass, offClass) {
+        if (tags.constructor !== Array) {
+          tags = [tags];
+        }
+        var hasTag = tags.some(function (tag) {
+          return chain.indexOf(tag) >= 0;
+        });
+        if (hasTag) {
+          if (onClass) button.addClass(onClass);
+          if (offClass) button.removeClass(offClass);
+        }
+        else {
+          if (onClass) button.removeClass(onClass);
+          if (offClass) button.addClass(offClass);
+        }
+      };
+    }
+    else {
+      toggleButtonStyle = newButton;
+    }
+    var toggleLinkButton = function () {
+      var selection = window.getSelection();
+      var node = $(selection.focusNode);
+      var tagChain = getNodeTagChain(node);
+
+      toggleButtonStyle(btn_bold, tagChain, ['b', 'strong'], 'selected');
+      toggleButtonStyle(btn_italic, tagChain, ['i', 'em'], 'selected');
+      toggleButtonStyle(btn_strike, tagChain, 'strike', 'selected');
+      toggleButtonStyle(btn_under, tagChain, 'u', 'selected');
+
+      // toggleButtonStyle(btn_link, tagChain, 'a', 'icon-unlink selected', 'icon-link');
+      toggleButtonStyle(btn_link, tagChain, 'a', 'selected');
+      toggleButtonStyle(btn_quote, tagChain, 'blockquote', 'selected');
+      toggleButtonStyle(btn_olist, tagChain, 'ol', 'selected');
+      toggleButtonStyle(btn_ulist, tagChain, 'ul', 'selected');
+
+      toggleButtonStyle(btn_h1, tagChain, 'h1', 'selected');
+      toggleButtonStyle(btn_h2, tagChain, 'h2', 'selected');
+      toggleButtonStyle(btn_h3, tagChain, 'h3', 'selected');
+      toggleButtonStyle(btn_h4, tagChain, 'h4', 'selected');
+
+      toogleLinkTask = null;
+    };
+    editor.on('keyup touchend', function (e) {
+      if (toogleLinkTask !== null) clearTimeout(toogleLinkTask)
+      toogleLinkTask = setTimeout(toggleLinkButton, 100);
+    });
+
+    var range = null, url_input = link_modal.find('input.url'), link_creating = false;
+
+    M.setContent = function (content) {
+      editor.html(content);
+    };
+    M.getContent = function () {
+      return editor.html();
+    };
+
+    M.toggleFontBold = function () {
+      document.execCommand('bold');
+    };
+    M.toggleFontItalic = function () {
+      document.execCommand('italic');
+    };
+    M.toggleFontStrikeThrough = function () {
+      document.execCommand('strikethrough');
+    };
+    M.toggleFontUnderline = function () {
+      document.execCommand('underline');
+    };
+
+    function toggleBlockFormat (cmd, tag, isBlock) {
+      if (!tag) {
+        tag = cmd;
+      }
+      var range = window.getSelection();
+      var node = range.anchorNode;
+      var block = $(node).parents(tag);
+      if (block.length > 0) {
+        document.execCommand('formatblock', false, 'p');
+      }
+      else {
+        if (!!isBlock) {
+          document.execCommand(cmd);
+        }
+        else {
+          document.execCommand('formatblock', false, cmd);
+        }
+      }
+    }
+    M.setNormalParagraph = function () {
+      document.execCommand('formatblock', false, 'p');
+    };
+    M.toggleBlockQuote = function () {
+      toggleBlockFormat('blockquote');
+    };
+    M.toggleOrderedList = function () {
+      document.execCommand('InsertOrderedList');
+    };
+    M.toggleUnorderedList = function () {
+      document.execCommand('InsertUnorderedList');
+    };
+    M.toggleHeader1 = function () {
+      toggleBlockFormat('h1');
+    };
+    M.toggleHeader2 = function () {
+      toggleBlockFormat('h2');
+    };
+    M.toggleHeader3 = function () {
+      toggleBlockFormat('h3');
+    };
+    M.toggleHeader4 = function () {
+      toggleBlockFormat('h4');
+    };
+    M.insertHeadRule = function () {
+      document.execCommand('insertHorizontalRule');
+    };
+    M.toggleLink = function () {
+      var selection = window.getSelection();
+      range = selection.getRangeAt(0);
+      var node = $(selection.focusNode);
+      var parent = null;
+      if (node.is('a')) {
+        parent = node;
+      }
+      else {
+        parent = node.parents('a');
+      }
+      if (parent && parent.length && parent.length > 0) {
+        url_input.val(parent.attr('href'));
+      }
+      mask.addClass('show');
+      link_modal.addClass('show');
+      link_modal.find('input.url').focus();
+      link_creating = true;
+    };
+    M.insertLink = function (url) {
+      document.execCommand('createlink', false, url);
+    };
+    M.cancelLink = function () {
+      document.execCommand('unlink');
+    };
+    M.getLink = function () {
+      var selection = window.getSelection();
+      range = selection.getRangeAt(0);
+      var node = $(selection.focusNode);
+      var parent = null;
+      if (node.is('a')) {
+        parent = node;
+      }
+      else {
+        parent = node.parents('a');
+      }
+      if (parent && parent.length && parent.length > 0) {
+        return parent.attr('href') + '\n' + parent.html();
+      }
+      else {
+        return '';
+      }
+    };
+    M.insertImage = function (url, origin) {
+      // url = "http://upload-images.jianshu.io/upload_images/4-a963a430da6b4ad9.gif?imageView2/2/w/1240/q/100";
+      if (!url) {
+        return;
+      }
+      else {
+        origin = origin || url;
+        document.execCommand('insertParagraph', false, 'line');
+        var selection = window.getSelection();
+        var node = $(selection.anchorNode);
+        var image = $('<div>').addClass('image-package');
+        $('<img>').attr('src', url).attr('data-original-src', origin).appendTo(image);
+        $('<br>').appendTo(image);
+        var caption = $('<div>').addClass('image-caption').html('new picture').appendTo(image);
+        node.before(image);
+        var range = selection.getRangeAt(0);
+        range.selectNode(caption[0]);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    };
+    M.undo = function () {
+      document.execCommand('undo');
+      var node = window.getSelection().getRangeAt(0).endContainer;
+      if (node.nodeType === 3) node = node.parentElement;
+      var top = node.getBoundingClientRect().top;
+      var height = $(window).height();
+      if (top < 0) {
+        M.isScrollManual = true;
+        window.scrollTo(0, top + window.scrollY);
+      }
+      else if (top > height - 50) {
+        M.isScrollManual = true;
+        window.scrollTo(0, window.scrollY + top - height + 50);
+      }
+    };
+    M.redo = function () {
+      document.execCommand('redo');
+      var node = window.getSelection().getRangeAt(0).endContainer;
+      if (node.nodeType === 3) node = node.parentElement;
+      var top = node.getBoundingClientRect().top;
+      var height = $(window).height();
+      if (top < 0) {
+        M.isScrollManual = true;
+        window.scrollTo(0, top + window.scrollY);
+      }
+      else if (top > height - 50) {
+        M.isScrollManual = true;
+        window.scrollTo(0, window.scrollY + top - height + 50);
+      }
+    };
+    M.focus = function () {
+      if (link_modal.hasClass('show')){
+        link_modal.focus();
+      }
+      else {
+        editor.focus();
+      }
+    };
+
+    link_modal.find('button.submit').on('click tap', function (e) {
+      if (!link_creating) return;
+
+      var url = url_input.val();
+      if (url === '') {
+        var selection = window.getSelection();
+        range = selection.getRangeAt(0);
+        var node = $(selection.focusNode);
+        var parent = null;
+        if (node.is('a')) {
+          parent = node;
+        }
+        else {
+          parent = node.parents('a');
+        }
+        range.selectNode(parent[0]);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand('unlink');
+        btn_link.addClass('icon-link');
+        btn_link.removeClass('icon-unlink');
+      }
+      else {
+        if (url.match(/^(https?|ftp):\/\//i) === null) {
+          url = 'http://' + url;
+        }
+        document.execCommand('createlink', false, url);
+        btn_link.removeClass('icon-link');
+        btn_link.addClass('icon-unlink');
+      }
+    });
+    link_modal.find('button').on('click tap', function (e) {
+      if (!link_creating) return;
+
+      mask.removeClass('show');
+      link_modal.removeClass('show');
+
+      editor.focus();
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      M.onQuitModal();
+    });
+    link_modal.find('input.url').on('keyup', function (e) {
+      if (e.keyCode === 13) {
+        link_modal.find('button.submit').click();
+        e.preventDefault();
+      }
+      else if (e.keyCode === 27) {
+        link_modal.find('button.cancel').click();
+        e.preventDefault();
+      }
+    });
+
+    newButton('left-margin', '');
+
+    var btn_bold = newButton('icon-bold', '', M.toggleFontBold);
+    var btn_italic = newButton('icon-italic', '', M.toggleFontItalic);
+    var btn_strike = newButton('icon-strikethrough', '', M.toggleFontStrikeThrough);
+    var btn_under = newButton('icon-underline', '', M.toggleFontUnderline);
+
+    var btn_link = newButton('icon-link', '', M.toggleLink);
+    var btn_image = newButton('icon-picture', '', M.insertImage);
+    var btn_quote = newButton('icon-quote-left', '', M.toggleBlockQuote);
+    var btn_olist = newButton('icon-list-ol', '', M.toggleOrderedList);
+    var btn_ulist = newButton('icon-list-ul', '', M.toggleUnorderedList);
+
+    var btn_hr = newButton('icon-check-minus', '', M.toggleHeadRule);
+
+    var btn_h1 = newButton('', 'H1', M.toggleHeader1);
+    var btn_h2 = newButton('', 'H2', M.toggleHeader2);
+    var btn_h3 = newButton('', 'H3', M.toggleHeader3);
+    var btn_h4 = newButton('', 'H4', M.toggleHeader4);
+
+    var btn_undo = newButton('icon-undo', '', M.undo);
+    var btn_redo = newButton('icon-repeat', '', M.redo);
+
+    editor.focus();
+
+    // Other Methods For Mobile Container
+    M.getRange = function () {
+      var range = null;
+      try {
+        var selection = window.getSelection();
+        if (!selection) return null;
+        range = selection.getRangeAt();
+        if (!range) return null;
+        var start = range.startContainer, end = range.endContainer;
+        var posS = range.startOffset, posE = range.endOffset;
+        if (start === end && posS === posE) return null;
+        var parent;
+        parent = $(start).parents('.editor');
+        if (parent[0] !== editor[0]) return null;
+        parent = $(end).parents('.editor');
+        if (parent[0] !== editor[0]) return null;
+      }
+      catch (err) {
+        range = null;
+      }
+      return range;
+    };
+    M.hasRange = function () {
+      var range = M.getRange();
+      return !!range;
+    };
+    // Events
+    M.onKeyPress = function (){};
+    M.onInput = function (){};
+    M.onScroll = function () {};
+    M.onDragStart = function (hasSelection) {};
+    M.onDragMove = function () {};
+    M.onDragStop = function (hasSelection) {};
+    M.onTap = function (hasSelection) {};
+    M.onSingleTap = function (hasSelection) {};
+    M.onDoubleTap = function (hasSelection) {};
+    M.onLongTap = function (hasSelection) {};
+    M.onError = function (error) {};
+    M.onResize = function (width, height, hasSelection) {};
+    M.onQuitModal = function () {};
+    M.onGetContent = function () {};
+    M.isScrollManual = false;
+
+    // Fire Events
+    editor.keypress(function () {
+      M.onKeyPress();
+    });
+    editor.on("input", function () {
+      M.onInput();
+    });
+    var winScrollY = window.scrollY;
+    var winOnScroll = window.onscroll;
+    window.onscroll = function (e) {
+      if (winOnScroll) winOnScroll(e);
+      if (M.isScrollManual) {
+        M.isScrollManual = false;
+        return;
+      }
+      var delta = Math.abs(window.scrollY - winScrollY);
+      if (delta > 5) {
+        winScrollY = window.scrollY;
+        M.onScroll();
+      }
+    };
+    var x = 0, y = 0, dis = 10, isDrag = false;
+    editor
+    .on('touchstart', function (e) {
+      var touch = e.touches[0];
+      x = touch.screenX;
+      y = touch.screenY;
+      isDrag = false;
+      M.onDragStart(M.hasRange());
+    })
+    .on('touchend', function (e) {
+      if (!isDrag) M.onTap(M.hasRange());
+      else M.onDragStop(M.hasRange());
+      isDrag = false;
+    })
+    .on('touchmove', function (e) {
+      var touch = e.touches[0];
+      if (Math.abs(touch.screenX - x) > dis || Math.abs(touch.screenY - y) > dis) {
+        isDrag = true;
+        M.onDragMove();
+      }
+    })
+    .on('singleTap', function (e) {
+      M.onSingleTap(M.hasRange());
+    })
+    .on('doubleTap', function (e) {
+      M.onDoubleTap(M.hasRange());
+    })
+    .on('longTap', function (e) {
+      M.onLongTap(M.hasRange());
+    });
+
+    window.onerror = function (e) {
+      M.onError(e.toString());
+    };
+    window.onresize = function () {
+      M.onResize(window.screen.width, window.screen.height, M.hasRange());
+    };
+
+    return M;
+  }) (false);
+
+  // var testContent = $('.test').html();
+  // MobileWriter.setContent(testContent);
+
+  // Invalidate the popup menu
+  document.oncontextmenu = function (e) {
+    return false;
+  };
+
+  var AndroidDelegate = {};
+  AndroidDelegate.init = function () {};
+  AndroidDelegate.log  = function () {};
+  AndroidDelegate.onNewField = function () {};
+  AndroidDelegate.onDomLoaded = function () {};
+  AndroidDelegate.onInput = function () {};
+  AndroidDelegate.onSelectionChanged = function () {};
+  AndroidDelegate.onSelectionStyles = function () {};
+
+  setTimeout(function () {
+    AndroidDelegate.init();
+  }, 1000);
+  </script>
+</html>
